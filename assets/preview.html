@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>天气积留位置</title>
+<style>
+*{box-sizing:border-box}body{max-width:1160px;margin:28px auto;padding:0 18px;font:16px/1.55 system-ui;color:#25372f;background:#fafaf7}h1{font-size:26px}nav{display:flex;gap:16px;flex-wrap:wrap}select{font:inherit;padding:4px}section{display:grid;grid-template-columns:1fr 1fr;gap:12px}img{width:100%;height:min(58vh,570px);object-fit:contain;background:#e9ece7}figure{margin:16px 0 8px}figcaption{font-weight:600}b{padding:2px 8px}a{color:#165e48}@media(max-width:600px){body{margin:10px auto}img{height:40vh}}
+</style>
+<h1>天气积留位置</h1>
+<nav><label>照片 <select id="scene"></select></label><label>情景 <select id="weather"></select></label></nav>
+<section><figure><img id="reference" alt="原图参考"><figcaption>原图参考</figcaption></figure>
+<figure><img id="overlay" alt="积留位置"><figcaption>位置判断</figcaption></figure></section>
+<p><b style="background:#a1e1cc">青绿 · 会</b>　<b style="background:#efd399">琥珀 · 保守略过</b>　原色 · 不会</p>
+<p id="conditions"></p><nav><a id="handoff">下游交接清单</a><a id="mask">原尺寸天气蒙版</a><a id="parts">部位编号图</a></nav>
+<script>
+const scenes=__SCENES__;
+const get=id=>document.getElementById(id);
+const option=(label,value)=>new Option(label,value);
+scenes.forEach((s,i)=>get('scene').add(option(s.name,i)));
+function display(){
+  const s=scenes[Number(get('scene').value)], w=get('weather').value;
+  const base=s.prefix+'/';
+  get('reference').src=base+s.reference;get('overlay').src=base+s.previews[w];
+  get('handoff').href=base+'handoff.json';get('mask').href=base+s.maps[w];get('parts').href=base+'部位编号.png';
+  get('conditions').textContent=s.assumptions.join(' ');
+}
+function selectScene(){
+  const menu=get('weather'), previous=menu.value;
+  menu.replaceChildren(...Object.keys(scenes[Number(get('scene').value)].maps).map(w=>option(w,w)));
+  if([...menu.options].some(o=>o.value===previous))menu.value=previous;
+  display();
+}
+get('scene').onchange=selectScene;get('weather').onchange=display;selectScene();
+</script></html>

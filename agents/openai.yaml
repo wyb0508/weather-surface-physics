@@ -1,0 +1,4 @@
+interface:
+  display_name: "天气积留位置"
+  short_description: "逐个区分照片中会积雪、积水、结霜或挂冰的具体部位，交接给特效设计"
+  default_prompt: "使用 $weather-surface-physics，按部位告诉特效设计哪些地方会积、哪些不会。"
